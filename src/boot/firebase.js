@@ -1,7 +1,14 @@
-// import something here
+import firebase from "firebase/app"
+import 'firebase/firestore'
+import { firebaseConfig } from './firebaseConfig.js';
 
-// "async" is optional;
-// more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file
-export default async (/* { app, router, Vue ... } */) => {
-  // something to do
-}
+import "firebase/auth"
+import "firebase/database"
+import "firebase/storage"
+
+let firebaseApp = firebase.initializeApp(firebaseConfig);
+let firebaseAuth = firebaseApp.auth();
+let firestore = firebaseApp.firestore()
+const { TimeStamp, GeoPoint } = firebase.firestore
+
+export { firestore, TimeStamp, GeoPoint }

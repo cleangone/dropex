@@ -1,7 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { vuexfireMutations } from 'vuexfire'
 
-// import example from './module-example'
+import auth  from './auth-store'
+import bid  from './bid-store'
+import color from './color-store'
+import drop  from './drop-store'
+import dropItem from './drop-item-store'
+
 
 Vue.use(Vuex)
 
@@ -17,9 +23,15 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      // example
+      auth,
+      bid,
+      color,
+      drop,
+      dropItem,
     },
-
+    mutations: {
+      ...vuexfireMutations
+    },
     // enable strict mode (adds overhead!)
     // for dev mode only
     strict: process.env.DEV

@@ -9,7 +9,6 @@
           <q-menu content-class="bg-grey-4 ">
             <q-list dense style="min-width: 100px">
               <q-item clickable to="/account" v-close-popup><q-item-section style="bg-black">Account</q-item-section></q-item>
-              <q-item clickable to="/actions"  v-close-popup><q-item-section style="bg-black">Bids/Buys</q-item-section></q-item>
               <q-item clickable v-close-popup><q-item-section @click="logoutUser">Logout</q-item-section></q-item>
             </q-list>
           </q-menu>
@@ -52,10 +51,9 @@
       computed: {
          ...mapState('auth', ['userId']),
          ...mapGetters('auth', ['loggedIn']),
-         ...mapGetters('user', ['getUser']),
-         user() { return this.getUser(this.userId)},
-         userIsAdmin() { return this.loggedIn && this.user.isAdmin },
-         userFirstName() { return this.user.firstName }
+        //  ...mapGetters('user', ['getUser']),
+        //  user() { return this.getUser(this.userId)},
+         userFirstName() { return "Tempo" }
       },
       methods: {
          ...mapActions('auth', ['logoutUser'])
