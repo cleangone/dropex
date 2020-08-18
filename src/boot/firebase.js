@@ -11,4 +11,4 @@ let firebaseAuth = firebaseApp.auth();
 let firestore = firebaseApp.firestore()
 const { TimeStamp, GeoPoint } = firebase.firestore
 
-export { firestore, TimeStamp, GeoPoint }
+export { firebaseAuth, firestore, TimeStamp, GeoPoint }

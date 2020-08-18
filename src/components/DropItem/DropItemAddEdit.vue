@@ -38,6 +38,7 @@
                status: DropItemStatus.AVAILABLE,
                startPrice: 0,
 					currPrice: 0,
+					bidders: []
             },
             statusOptions: [ DropItemStatus.AVAILABLE, DropItemStatus.DROPPING, DropItemStatus.HOLD ],
 						
@@ -54,7 +55,8 @@
                   this.dropItemToSubmit.currPrice = 0 
                   this.dropItemToSubmit.currBidderId = ''
                   this.dropItemToSubmit.dropDoneDate = 0 
-                  this.dropItemToSubmit.lastUserActivityDate = 0 
+						this.dropItemToSubmit.lastUserActivityDate = 0 
+						this.dropItemToSubmit.bidders = []
                }
 					this.$emit('close')
 					this.createUpdateDropItem()

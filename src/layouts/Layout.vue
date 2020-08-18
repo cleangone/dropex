@@ -9,7 +9,7 @@
           <q-menu content-class="bg-grey-4 ">
             <q-list dense style="min-width: 100px">
               <q-item clickable to="/account" v-close-popup><q-item-section style="bg-black">Account</q-item-section></q-item>
-              <q-item clickable v-close-popup><q-item-section @click="logoutUser">Logout</q-item-section></q-item>
+              <q-item clickable v-close-popup><q-item-section @click="logout">Logout</q-item-section></q-item>
             </q-list>
           </q-menu>
         </q-btn>        
@@ -24,10 +24,9 @@
          <div v-if="loggedIn">
             <layout-item path="/account" label="My Account" iconName="account_circle"/>       
          </div>
-         <div v-else="loggedIn">
+         <div v-else>
             <layout-item path="/auth/login"    label="Login"    iconName="account_circle"/>       
             <layout-item path="/auth/register" label="Register" iconName="account_box"/>       
-        
          </div>
       </q-list>
     </q-drawer>
@@ -56,7 +55,12 @@
          userFirstName() { return "Tempo" }
       },
       methods: {
-         ...mapActions('auth', ['logoutUser'])
+         ...mapActions('auth', ['logoutUser']),
+         logout() {        
+            console.log("logging out, currently route", this.$route)
+            this.logoutUser()
+            if (this.$route.path != "/") { this.$router.push("/") }
+		   },
       },
       components: {
          'layout-item' : require('layouts/LayoutItem.vue').default
