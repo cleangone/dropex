@@ -3,16 +3,16 @@
 	  <q-card class="form-card flat">
 			<q-card-section>
 				<div class="q-mb-sm">
-					<q-input v-model="userToUpdate.firstName" label="First Name" stack-label />
+					<q-input v-model="userToSubmit.firstName" label="First Name" stack-label />
 				</div>
 				<div class="q-mb-sm">
-					<q-input v-model="userToUpdate.lastName" label="Last Name" stack-label />
+					<q-input v-model="userToSubmit.lastName" label="Last Name" stack-label />
 				</div>
 			</q-card-section>
 		
 			<q-card-actions >
 				<q-btn @click="reset" label="Reset" color="grey" />
-				<q-btn @click="submitUpdate" label="Save" color="primary" />
+				<q-btn @click="submitUser" label="Save" color="primary" />
 			</q-card-actions>
   		</q-card>
   	</q-page>
@@ -25,19 +25,18 @@
 	export default {
 		data() {
 	  		return {
-				userToUpdate: {}
+				userToSubmit: {}
 			}
 		},
 		computed: {
 			...mapState('auth', ['userId']),
-			...mapGetters('auth', ['loggedIn']),
-			...mapGetters('user', ['getUser', 'isAdmin']),
-			user() { return this.getUser(this.userId)},
+         ...mapGetters('user', ['getUser']),
+			user() { return this.getUser(this.userId) }, // if user does not exist, this is a placholder w/ the id
 		},
 		methods: {
-			...mapActions('user', ['updateUser']),
-			reset() { this.userToUpdate = Object.assign({}, this.user) },
-			submitUpdate() { this.updateUser({ id: this.userId, user: this.userToUpdate }) }
+			...mapActions('user', ['setUser']),
+			reset() { this.userToSubmit = Object.assign({}, this.user) },
+			submitUser() { this.setUser(this.userToSubmit) }
 		},
 		mounted() { this.reset() }
 	}

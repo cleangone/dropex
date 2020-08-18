@@ -41,29 +41,34 @@
    import { mapState, mapGetters, mapActions } from 'vuex'
 
    export default {
-   name: 'MainLayout',
-   data () {
-      return {
-         leftDrawerOpen: false
-      }
-   },
+      name: 'MainLayout',
+      data () {
+         return {
+            leftDrawerOpen: false
+         }
+      },
       computed: {
          ...mapState('auth', ['userId']),
          ...mapGetters('auth', ['loggedIn']),
-        //  ...mapGetters('user', ['getUser']),
-        //  user() { return this.getUser(this.userId)},
-         userFirstName() { return "Tempo" }
+         ...mapGetters('user', ['getUser']),
+         userFirstName() { 
+            let user = this.getUser(this.userId) 
+            return user && user.firstName ? user.firstName : "Logged In"
+         }
       },
       methods: {
          ...mapActions('auth', ['logoutUser']),
+         ...mapActions('user', ['bindUsers']),
          logout() {        
-            console.log("logging out, currently route", this.$route)
             this.logoutUser()
             if (this.$route.path != "/") { this.$router.push("/") }
-		   },
+         },
       },
       components: {
          'layout-item' : require('layouts/LayoutItem.vue').default
+      },
+      created() {
+         this.bindUsers()
       },
    }
 </script>

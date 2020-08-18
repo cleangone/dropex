@@ -10,18 +10,9 @@ const mutations = {
 
 const actions = {
     // payload = {email, password}
-    async registerUser({}, payload) { 
-        //console.log('registerUser', payload) 
-        return firebaseAuth.createUserWithEmailAndPassword(payload.email, payload.password)
-    },
-    async loginUser({}, payload) { 
-        //console.log('loginUser', payload)    
-        return firebaseAuth.signInWithEmailAndPassword(payload.email, payload.password)
-    },
-    logoutUser() { 
-        //console.log('logoutUser')    
-        firebaseAuth.signOut()
-    },
+    async registerUser({}, payload) { return firebaseAuth.createUserWithEmailAndPassword(payload.email, payload.password) },
+    async loginUser({}, payload) { return firebaseAuth.signInWithEmailAndPassword(payload.email, payload.password) },
+    logoutUser() { firebaseAuth.signOut() },
     handleAuthStateChange({commit, dispatch}) { 
         //console.log('handleAuthStateChange')
         firebaseAuth.onAuthStateChanged(user => {
