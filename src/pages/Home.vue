@@ -13,8 +13,9 @@
 </template>
 
 <script>
-   import { mapState, mapGetters, mapActions } from 'vuex'
-
+   import { mapGetters, mapActions } from 'vuex'
+   import User from 'src/models/User.js'
+   
    export default {
       name: 'PageIndex',
       data() {

@@ -9,10 +9,12 @@
 
   export default {
     methods: {
-      ...mapActions('auth', ['handleAuthStateChange'])
+      ...mapActions('auth', ['handleAuthStateChange', 'handleAuthTokenChange', 'handleAuthStateChange'])
     },
     mounted() {
-      console.log("App.mounted")
+      // console.log("App.mounted")
+      this.handleAuthStateChange()
+      this.handleAuthTokenChange()
       this.handleAuthStateChange()
     }
 }

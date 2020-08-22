@@ -28,6 +28,11 @@
             <layout-item path="/auth/login"    label="Login"    iconName="account_circle"/>       
             <layout-item path="/auth/register" label="Register" iconName="account_box"/>       
          </div>
+         <div v-if="userIsAdmin">
+          <q-item-label header>Admin</q-item-label>
+          <layout-item path="/users"   label="Users"    iconName="group"/>
+          <layout-item path="/invoice" label="Invoices" iconName="shopping_cart"/>
+        </div>
       </q-list>
     </q-drawer>
 
@@ -38,7 +43,7 @@
 </template>
 
 <script>
-   import { mapState, mapGetters, mapActions } from 'vuex'
+   import { mapGetters, mapActions } from 'vuex'
 
    export default {
       name: 'MainLayout',
@@ -48,13 +53,11 @@
          }
       },
       computed: {
-         ...mapState('auth', ['userId']),
-         ...mapGetters('auth', ['loggedIn']),
-         ...mapGetters('user', ['getUser']),
-         userFirstName() { 
-            let user = this.getUser(this.userId) 
-            return user && user.firstName ? user.firstName : "Logged In"
-         }
+         ...mapGetters('auth', ['loggedIn', 'userId']),
+         ...mapGetters('user', ['getUser', 'isAdmin']),
+         user() { return this.getUser(this.userId) },
+         userFirstName() { return this.user && this.user.firstName ? this.user.firstName : "Logged In" },
+         userIsAdmin() { return this.user && this.user.isAdmin }
       },
       methods: {
          ...mapActions('auth', ['logoutUser']),

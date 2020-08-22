@@ -17,7 +17,7 @@
 </template>
 
 <script>
-	import { mapState, mapGetters, mapActions } from 'vuex'
+	import { mapGetters, mapActions } from 'vuex'
 	
 	export default {
 		data() {
@@ -36,10 +36,7 @@
          ...mapGetters('color', ['red', 'pink', 'orange', 'yellow', 'blue', 'green', 'indigo', 'purple' ]),
 			
          drop() { return this.getDrop(this.dropId) },
-         dropItems() { 
-            
-            
-            return this.getDropItems(this.dropId) },
+         dropItems() { return this.getDropItems(this.dropId) },
 		},
 		methods: {
          ...mapActions('dropItem', ['bindDropItems']),

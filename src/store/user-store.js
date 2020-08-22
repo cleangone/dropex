@@ -1,5 +1,6 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore } from 'boot/firebase'
+import User from 'src/models/User'
 	
 /*
     user: 
@@ -29,21 +30,15 @@ const getters = {
    hasUsers: state => { return state.users && state.users.length > 0 },
    getUsers: state => { return state.users },
    getUser: state => userId => {
-      //console.log("getUser", userId, state.users)
-      let user = { id: userId }
-      state.users.forEach(u => {
-         //console.log("getUser: checking " + u.id + " == " + userId)
-         if (u.id == userId) { 
-            //console.log("getUser: match")
-            user = u }
-      })
-      return user
+      for (var user of state.users) {
+          if (user.id == userId) { return user }
+      }
+      return { id: userId }
    }, 
-   isAdmin: state => userId => {
-      state.users.forEach(user => {
-         if (user.id == userId) { return user.isAdmin }
-      })
-      return false
+   isAdmin: state => userId => { 
+      let user = getters.getUser(userId)
+      console.log("isAdmin", user)
+      return user.isAdmin
    }
 }
 
