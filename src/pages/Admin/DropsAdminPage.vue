@@ -81,7 +81,6 @@
 			'drop-add-edit' : require('components/Drop/DropAddEdit.vue').default
       },
       created() {
-         // not necc for prod - here for restarts in dev
          if (!this.dropsExist) { this.bindDrops() }
       }
 	}
