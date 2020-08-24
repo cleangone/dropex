@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "Base64": "^1.1.0",
+    "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "firebase": "^7.18.0",
     "quasar": "^1.0.0",

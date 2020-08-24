@@ -54,7 +54,8 @@
                if (this.dropItemToSubmit.status == DropItemStatus.AVAILABLE) { 
                   this.dropItemToSubmit.currPrice = 0 
                   this.dropItemToSubmit.currBidderId = ''
-                  this.dropItemToSubmit.winningBidderId = ''
+                  this.dropItemToSubmit.buyerId = ''
+                  this.dropItemToSubmit.buyerName = ''
                   this.dropItemToSubmit.dropDoneDate = 0 
 						this.dropItemToSubmit.lastUserActivityDate = 0 
 						this.dropItemToSubmit.bidders = []

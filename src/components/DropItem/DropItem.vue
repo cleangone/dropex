@@ -2,25 +2,24 @@
 	<q-card class="card q-pl-sm">
 		<q-card-section class="q-px-xs">
          <div class="text-bold">{{ dropItem.name }}</div>
-         <div v-if="isHold">
-            On Hold
-            <span v-if="userIsWinningBidder" class="text-bold"> - You are the the winning bidder</span>
-         </div>
-         <div v-else>
+         <div v-if="isAvailableForPurchase">
             <span>Price: ${{ currPrice }} </span>
             <span v-if="userIsCurrBidder" class="text-bold"> - You are the high-bidder</span>
             <span v-else-if="userIsOutbid" class="text-bold"> - You have been outbid</span>
-
          </div>
-
+         <div v-else>
+            On Hold
+            <span v-if="userIsBuyer" class="text-bold"> - You are the the winning bidder</span>
+         </div>
          <drop-item-timer v-if="isDropping" :dropItem="dropItem"/>
       </q-card-section>	
       <q-card-section class="q-pa-md"/>
 		<q-card-actions class="absolute-bottom q-pa-none">
-         <q-btn v-if="!isHold && !loggedIn" to="/auth/login" label="Login to Bid" color="primary" class="q-ma-sm" small/>
-			<q-btn v-if="!isHold && loggedIn" @click="promptToBid()" label="Bid" color="primary" class="q-ma-sm" small/>
-         <q-btn @click="showEditModal = true" icon="edit" color="blue" flat small class="col" align="right"/>
-         <q-btn icon="delete" @click="promptToDelete()" flat color="red" />
+         <div v-if="isAvailableForPurchase">
+            <q-btn v-if="loggedIn" @click="promptToBid()" label="Bid" color="primary" class="q-ma-sm" small/>
+            <q-btn v-else to="/auth/login" label="Login to Bid" color="primary" class="q-ma-sm" small/>
+         </div>
+         <q-btn v-if="userIsAdmin" @click="showEditModal = true" icon="edit" color="blue" flat small class="col" align="right"/>
 		</q-card-actions> 
 		<q-dialog v-model="showEditModal">
 			<drop-item-add-edit type="edit" :dropItem="dropItem" @close="showEditModal=false" />
@@ -41,13 +40,16 @@
       },
       computed: {
          ...mapGetters('auth', ['loggedIn', 'userId']),
+         ...mapGetters('user', ['getUser', 'isAdmin']),
          ...mapGetters('drop', ['dropsExist']),
+         isAvailableForPurchase() { return this.dropItem.status ==  DropItemStatus.AVAILABLE || this.dropItem.status ==  DropItemStatus.DROPPING },
          isDropping() { return this.dropItem.status == DropItemStatus.DROPPING },
-         isHold() { return this.dropItem.status ==  DropItemStatus.HOLD },
          currPrice() { return this.dropItem.currPrice ? this.dropItem.currPrice  : this.dropItem.startPrice },
          userIsCurrBidder() { return this.dropItem.currBidderId == this.userId },
          userIsOutbid() { return this.dropItem.bidders.includes(this.userId) && !this.userIsHigherBidder},
-         userIsWinningBidder() { return this.dropItem.currBidderId == this.userId },
+         userIsBuyer() { return this.dropItem.buyerId == this.userId },
+         user() { return this.getUser(this.userId) },
+         userIsAdmin() { return this.user && this.user.isAdmin }
       },
       methods: {
          ...mapActions('dropItem', ['deleteDropItem']),
@@ -60,12 +62,6 @@
                this.createBid({ dropItemId: this.dropItem.id, userId: this.userId, amount: bidAmount })
             })
 			},
-         promptToDelete() { 
-				// console.log("promptToDelete", dropItemId)
-				this.$q.dialog({title: 'Confirm', message: 'Delete ' + this.dropItem.name + '?', persistent: true,			
-	        		ok: { push: true }, cancel: { push: true, color: 'grey' }
-				}).onOk(() => { this.deleteDropItem(this.dropItem.id) })
-         }
       },
       components: {
          'drop-item-add-edit' : require('components/DropItem/DropItemAddEdit.vue').default,

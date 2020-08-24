@@ -26,13 +26,9 @@
 				showModal: false,
         }
 		},
-		created() {
-         this.dropId = this.$route.params.dropId
-         this.bindDropItems()
-      },
 	  	computed: {
          ...mapGetters('drop', ['getDrop']),
-         ...mapGetters('dropItem', ['getDropItems']),
+         ...mapGetters('dropItem', ['dropItemsExist', 'getDropItems']),
          ...mapGetters('color', ['red', 'pink', 'orange', 'yellow', 'blue', 'green', 'indigo', 'purple' ]),
 			
          drop() { return this.getDrop(this.dropId) },
@@ -45,6 +41,10 @@
 		components: {
 	  		'drop-item' : require('components/DropItem/DropItem.vue').default,
 	  		'drop-item-add-edit' : require('components/DropItem/DropItemAddEdit.vue').default
+      },
+      created() {
+         this.dropId = this.$route.params.dropId
+         if (!this.dropItemsExist) { this.bindDropItems() }    
       },
 	}
 

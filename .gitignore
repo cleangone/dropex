@@ -6,6 +6,7 @@ node_modules
 /dist
 
 /src/boot/firebaseConfig.js
+/src/boot/paypalConfig.js
 
 /src-cordova/node_modules
 /src-cordova/platforms

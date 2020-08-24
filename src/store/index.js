@@ -7,8 +7,8 @@ import bid      from './bid-store'
 import color    from './color-store'
 import drop     from './drop-store'
 import dropItem from './drop-item-store'
+import invoice  from './invoice-store'
 import user     from './user-store'
-
 
 Vue.use(Vuex)
 
@@ -29,6 +29,7 @@ export default function (/* { ssrContext } */) {
       color,
       drop,
       dropItem,
+      invoice,
       user
     },
     mutations: {

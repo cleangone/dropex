@@ -34,7 +34,7 @@
          'drop-add-edit' : require('components/Drop/DropAddEdit.vue').default
 		},
       created() {
-         this.bindDrops()
+         if (!this.dropsExist) { this.bindDrops() } 
       }
    }
 </script>

@@ -32,6 +32,10 @@ const actions = {
       // console.log("updateDropItem", dropItem)
       collection().doc(dropItem.id).set(dropItem)
    }),
+   sparseUpdateDropItem: firestoreAction((context, dropItem) => {
+      // console.log("updateDropItem", dropItem)
+      collection().doc(dropItem.id).update(dropItem)
+   }),
    deleteDropItem: firestoreAction((context, id) => { 
       // console.log("deleteDropItem", id)
       collection().doc(id).delete()
@@ -41,7 +45,7 @@ const actions = {
 function collection() { return firestore.collection('dropItems') }
 
 const getters = {
-   dropItemsExist: state => { return state.drops && state.drops.length > 0 },
+   dropItemsExist: state => { return state.dropItems && state.dropItems.length > 0 },
    getDropItems: state => dropId => { 
       // console.log("getDropItems: dropId", dropId) 
       let dropItems = []

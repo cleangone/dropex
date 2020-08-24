@@ -17,6 +17,9 @@
 				<div class="q-mb-sm">
 					<q-input v-model="userToSubmit.lastName" label="Last Name" stack-label />
 				</div>
+            <div class="q-mb-sm">
+					<q-input v-model="userToSubmit.payPalEmail" label="PayPal Email/ID" stack-label />
+				</div>
 			</q-card-section>
 		
 			<q-card-actions >

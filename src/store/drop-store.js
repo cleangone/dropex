@@ -45,17 +45,11 @@ const getters = {
       return state.drops
    },
    getDrop: state => dropId => {
-      let returnDrop = null
+      for (var drop of state.drops) {
+         if (drop.id == dropId) { return drop }
+      }
 
-      //console.log("getDrop: dropId", dropId) 
-      state.drops.forEach(drop => {
-         //console.log("getDrop: checking", drop) 
-         if (drop.id == dropId) {
-            //console.log("getDrop", drop) 
-            returnDrop = drop
-         }
-      })
-      return returnDrop
+      return null
   },
 }
 

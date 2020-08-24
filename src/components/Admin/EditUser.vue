@@ -11,9 +11,13 @@
 		<div class="row q-mb-sm">
 	      <q-input v-model="userToUpdate.lastName" label="Last Name" filled class="col"/>
     	</div>
-		<div v-if="!isEditingSelf" class="row q-mb-sm">
+		<div class="row q-mb-sm">
+	      <q-toggle v-model="userToUpdate.payPalEmail" label="PayPal Email" class="col"/>
+    	</div>
+      <div v-if="!isEditingSelf" class="row q-mb-sm">
 	      <q-toggle v-model="userToUpdate.isAdmin" label="Admin" class="col"/>
     	</div>
+       
 	</q-card-section>
 
     <q-card-actions align="right">

@@ -30,8 +30,9 @@
          </div>
          <div v-if="userIsAdmin">
           <q-item-label header>Admin</q-item-label>
-          <layout-item path="/users"   label="Users"    iconName="group"/>
-          <layout-item path="/invoice" label="Invoices" iconName="shopping_cart"/>
+          <layout-item path="/admin/drops"    label="Drops"    iconName="get_app"/>
+          <layout-item path="/users"          label="Users"    iconName="group"/>
+          <layout-item path="/admin/invoices" label="Invoices" iconName="shopping_cart"/>
         </div>
       </q-list>
     </q-drawer>
