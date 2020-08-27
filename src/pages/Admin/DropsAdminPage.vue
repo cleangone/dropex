@@ -1,10 +1,11 @@
 <template>
   <q-page>
 		<div class="q-pa-sm absolute full-width full-height">
-			<q-table title="Drops" :data="getDrops" 
+			<!-- @row-click="onRowClick" -->
+         <q-table title="Drops" :data="getDrops" 
 				:columns="columns" :visible-columns="visibleColumns" 
 				row-key="name" :filter="tableDataFilter" 
-            @row-click="onRowClick"
+             @row-click="onRowClick"
             :pagination.sync="pagination"
 				:dense="$q.screen.lt.md" class="q-mb-sm">
 				<template v-slot:top-right>
@@ -14,8 +15,8 @@
 					</q-input>
 				</template>
 				<q-td slot="body-cell-actions" slot-scope="props" :props="props">
-	            <q-btn icon="edit"   @click="editDrop(props.row.id)"           flat color="blue" />
-    				<q-btn icon="delete" @click="promptToDeleteDrop(props.row.id)" flat color="red" />
+	            <q-btn icon="edit"   @click="editDrop(props.row.id)"           @click.stop flat color="primary" />
+    				<q-btn icon="delete" @click="promptToDeleteDrop(props.row.id)" @click.stop flat color="red" />
   				</q-td>
 			</q-table>
 			<q-btn @click="showAddModal=true" icon="add" unelevated color="blue"/>
@@ -58,11 +59,9 @@
 		},
 		methods: {
          ...mapActions('drop', ['bindDrops', 'deleteDrop']),
-         onRowClick(event, row) {
-            this.$router.push("/admin/dropitems/" + row.id)
-         },
+         onRowClick(event, row) { this.$router.push("/admin/items/" + row.id) },
 			editDrop(dropId) {
-				console.log("editDrop", dropId)
+				// console.log("editDrop", dropId)
 				this.dropIdToEdit = dropId
 				this.showEditModal = true
 			},
@@ -81,6 +80,7 @@
 			'drop-add-edit' : require('components/Drop/DropAddEdit.vue').default
       },
       created() {
+         // console.log("DropsAdminPage")
          if (!this.dropsExist) { this.bindDrops() }
       }
 	}

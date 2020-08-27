@@ -1,7 +1,7 @@
 <template>
 	<q-card class="card q-pl-sm">
 		<q-card-section class="q-px-xs">
-         <div class="text-bold">{{ dropItem.name }}</div>
+         <div class="text-bold">{{ item.name }}</div>
          <div v-if="isAvailableForPurchase">
             <span>Price: ${{ currPrice }} </span>
             <span v-if="userIsCurrBidder" class="text-bold"> - You are the high-bidder</span>
@@ -11,7 +11,7 @@
             On Hold
             <span v-if="userIsBuyer" class="text-bold"> - You are the the winning bidder</span>
          </div>
-         <drop-item-timer v-if="isDropping" :dropItem="dropItem"/>
+         <item-timer v-if="isDropping" :item="item"/>
       </q-card-section>	
       <q-card-section class="q-pa-md"/>
 		<q-card-actions class="absolute-bottom q-pa-none">
@@ -22,17 +22,17 @@
          <q-btn v-if="userIsAdmin" @click="showEditModal = true" icon="edit" color="blue" flat small class="col" align="right"/>
 		</q-card-actions> 
 		<q-dialog v-model="showEditModal">
-			<drop-item-add-edit type="edit" :dropItem="dropItem" @close="showEditModal=false" />
+			<item-add-edit type="edit" :item="item" @close="showEditModal=false" />
 		</q-dialog> 
   	</q-card> 
 </template>
 
 <script>
    import { mapGetters, mapActions } from 'vuex'
-   import { DropItemStatus } from '../../constants/Constants.js'
+   import { ItemStatus } from 'src/constants/Constants.js'
    
    export default {
-      props: ["dropItem"],
+      props: ["item"],
       data() {
          return {
             showEditModal: false
@@ -42,30 +42,29 @@
          ...mapGetters('auth', ['loggedIn', 'userId']),
          ...mapGetters('user', ['getUser', 'isAdmin']),
          ...mapGetters('drop', ['dropsExist']),
-         isAvailableForPurchase() { return this.dropItem.status ==  DropItemStatus.AVAILABLE || this.dropItem.status ==  DropItemStatus.DROPPING },
-         isDropping() { return this.dropItem.status == DropItemStatus.DROPPING },
-         currPrice() { return this.dropItem.currPrice ? this.dropItem.currPrice  : this.dropItem.startPrice },
-         userIsCurrBidder() { return this.dropItem.currBidderId == this.userId },
-         userIsOutbid() { return this.dropItem.bidders.includes(this.userId) && !this.userIsHigherBidder},
-         userIsBuyer() { return this.dropItem.buyerId == this.userId },
+         isAvailableForPurchase() { return this.item.status ==  ItemStatus.AVAILABLE || this.item.status ==  ItemStatus.DROPPING },
+         isDropping() { return this.item.status == ItemStatus.DROPPING },
+         currPrice() { return this.item.currPrice ? this.item.currPrice  : this.item.startPrice },
+         userIsCurrBidder() { return this.item.currBidderId == this.userId },
+         userIsOutbid() { return this.item.bidders.includes(this.userId) && !this.userIsHigherBidder},
+         userIsBuyer() { return this.item.buyerId == this.userId },
          user() { return this.getUser(this.userId) },
          userIsAdmin() { return this.user && this.user.isAdmin }
       },
       methods: {
-         ...mapActions('dropItem', ['deleteDropItem']),
          ...mapActions('bid', ['createBid']),
          promptToBid() {
-				let bidAmount = this.dropItem.currPrice ? this.dropItem.currPrice + 25 : this.dropItem.startPrice
-				this.$q.dialog({title: 'Confirm', message: 'Bid $' + bidAmount + ' on ' + this.dropItem.name + '?', persistent: true,			
+				let bidAmount = this.item.currPrice ? this.item.currPrice + 25 : this.item.startPrice
+				this.$q.dialog({title: 'Confirm', message: 'Bid $' + bidAmount + ' on ' + this.item.name + '?', persistent: true,			
 	        		ok: { push: true }, cancel: { push: true, color: 'grey' }
 				}).onOk(() => {
-               this.createBid({ dropItemId: this.dropItem.id, userId: this.userId, amount: bidAmount })
+               this.createBid({ itemId: this.item.id, userId: this.userId, amount: bidAmount })
             })
 			},
       },
       components: {
-         'drop-item-add-edit' : require('components/DropItem/DropItemAddEdit.vue').default,
-         'drop-item-timer' : require('components/DropItem/DropItemTimer.vue').default
+         'item-add-edit' : require('components/Item/ItemAddEdit.vue').default,
+         'item-timer' : require('components/Item/ItemTimer.vue').default
       }
    }
 </script>

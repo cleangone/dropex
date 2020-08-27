@@ -1,15 +1,6 @@
 
-export const DropItemStatus = {
-   PREVIEW:   'Preview',
-   AVAILABLE: 'Available',
-   DROPPING:  'Dropping',
-   HOLD:      'On Hold',
-   INVOICED:  'Invoiced',
-   SOLD:      'Sold',
-}
-
 export const BidStatus = {
-   SUBMITTED: 'Submitted',
+   CREATED:   'Created',
    PROCESSED: 'Processed',
    ERROR:     'Error',
 }
@@ -20,3 +11,13 @@ export const InvoiceStatus = {
    PAID:    'Paid',
    SHIPPED: 'Shipped',
 }
+
+export const ItemStatus = {
+   PREVIEW:   'Preview',
+   AVAILABLE: 'Available',
+   DROPPING:  'Dropping',
+   HOLD:      'On Hold',
+   INVOICED:  'Invoiced',
+   SOLD:      'Sold',
+}
+

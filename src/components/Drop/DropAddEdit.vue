@@ -64,7 +64,7 @@
 		computed: {		
     	},
 		methods: {
-			...mapActions('drop', ['createDrop', 'updateDrop']),
+			...mapActions('drop', ['createDrop', 'setDrop']),
 			submitForm() {
 				console.log("submitForm")
 				this.$refs.name.validate()
@@ -83,7 +83,7 @@
             this.dropToSubmit.startDate = new Date(formattedStartDate)
             
             if (this.type == 'add') { this.createDrop(this.dropToSubmit) }
-				else { this.updateDrop(this.dropToSubmit) }
+				else { this.setDrop(this.dropToSubmit) }
 			}
 		},
 		mounted() {
@@ -104,6 +104,7 @@
 		let dateString = new Date(Date.now()).toString()
       let timezone = dateString.slice(dateString.indexOf("("), dateString.indexOf(")") + 1)
       if (timezone == "(Eastern Daylight Time)") { timezone = "(EDT)" }
+      else if (timezone == "(Pacific Daylight Time)") { timezone = "(PDT)" }
       return timezone
 	}
 </script>

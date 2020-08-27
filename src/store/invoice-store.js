@@ -3,11 +3,11 @@ import { firestore } from 'boot/firebase'
 import { uid } from 'quasar'
 
 /*
-   invoices:
+   invoice
       id
       userId
       createdDate
-      items[] - dropItemId, name, price
+      items[] - itemId, name, price
       status: created, sent, paid, shipped
       subTotal
       shippingCharge

@@ -1,12 +1,12 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore } from 'boot/firebase'
 import { Notify, uid } from 'quasar'
-import { BidStatus } from '../constants/Constants.js'
+import { BidStatus } from 'src/constants/Constants.js'
    
 /*
    bid:
       id
-      dropItemId
+      itemId
       userId
       createdDate
       amount
@@ -20,20 +20,19 @@ const actions = {
       console.log("createBid", bid)
       
       let error = null
-      if (!bid.dropItemId)  { error = "bid.dropItemId not set"}
+      if (!bid.itemId)      { error = "bid.itemId not set"}
       else if (!bid.userId) { error = "bid.userId not set"}
       else if (!bid.amount) { error = "bid.amount not set"}
       
       if (error)
       {
          console.log("Bid Error: " + error)
-         showNegativeNotify("Bid submitted")
          return
       }
        
       bid.id = uid()
       bid.createdDate = Date.now()
-      bid.status = BidStatus.SUBMITTED
+      bid.status = BidStatus.CREATED
       firestore.collection('bids').doc(bid.id).set(bid)
    
       showPositiveNotify("Bid submitted")
@@ -41,7 +40,6 @@ const actions = {
 }
 
 function showPositiveNotify(msg) { Notify.create( {type: "positive", timeout: 1000, message: msg} )}
-function showNegativeNotify(msg) { Notify.create( {type: "negative", timeout: 5000, message: msg} )}
 
 export default {
 	namespaced: true,

@@ -2,10 +2,10 @@
   <q-page>
 		<div class="q-pa-sm absolute full-width full-height">
 			<q-table
-			  :title="'Drop Items - ' + drop.name"
+			  :title="'Items - Drop ' + drop.name"
 			  :columns="columns"
 			  :visible-columns="visibleColumns"
-			  :data="dropItems"
+			  :data="items"
 			  row-key="name"
 			  :filter="tableDataFilter"
 			  :dense="$q.screen.lt.md"
@@ -20,8 +20,8 @@
 				</template>
 				<q-td slot="body-cell-actions" slot-scope="props" :props="props">
 					<a v-if="props.row.bids" :href="'#/bids/' + dropId + '/' + props.row.id">Bids</a>
-	            <q-btn icon="edit"   @click="editDropItem(props.row.id)"           flat color="blue" />
-    				<q-btn icon="delete" @click="promptToDeleteDropItem(props.row.id, props.row.name)" flat color="red" />
+	            <q-btn icon="edit"   @click="editItem(props.row.id)"           flat color="blue" />
+    				<q-btn icon="delete" @click="promptToDeleteItem(props.row.id, props.row.name)" flat color="red" />
   				</q-td>
 			</q-table>
          <div class="q-mt-md">
@@ -32,13 +32,13 @@
 
 		<!-- 2 drop-item modals - don't want a race condition updating type  -->
 		<q-dialog v-model="showAddModal">	
-			<drop-item-add-edit type="add" :dropId="dropId" @close="showAddModal=false" />
+			<item-add-edit type="add" :dropId="dropId" @close="showAddModal=false" />
 		</q-dialog>
 		<q-dialog v-model="showEditModal">
-			<drop-item-add-edit type="edit" :dropId="dropId" :dropItem="dropItemToEdit" @close="showEditModal=false" />
+			<item-add-edit type="edit" :dropId="dropId" :item="itemToEdit" @close="showEditModal=false" />
 		</q-dialog>
       <q-dialog v-model="showInvoiceModal">	
-			<add-edit-invoice type="create" :dropItems="selectedRowItems" @close="showInvoiceModal=false" />
+			<invoice-add-edit type="create" :items="selectedRowItems" @close="showInvoiceModal=false" />
 		</q-dialog>
   	</q-page>
 </template>
@@ -54,20 +54,20 @@
 				showAddModal: false,
 				showEditModal: false,
 				showInvoiceModal: false,
-				dropItemIdToEdit: '',
+				itemIdToEdit: '',
             tableDataFilter: '',
             selectedRowItems: [],
-				visibleColumns: [ 'name', 'saleType', 'buyerName', 'price', 'currPrice', 'bids', 'status', 'actions'],
+				visibleColumns: [ 'name', 'saleType', 'buyerName', 'startPrice', 'buyPrice', 'bids', 'status', 'actions'],
  				columns: [
         			{ name: 'id', field: 'id' },
-				 	{ name: 'name',      label: 'Name',        align: 'left',   field: 'name',      sortable: true },
-				 	{ name: 'saleType',  label: 'Type',        align: 'center', field: 'saleType',  sortable: true },
-					{ name: 'buyerId',   label: 'BuyerId',     align: 'left',   field: 'buyerId',   sortable: true },
-					{ name: 'buyerName', label: 'Buyer',       align: 'left',   field: 'buyerName', sortable: true },
-					{ name: 'price',     label: 'Start Price', align: 'right',  field: 'price',     sortable: true, format: val => val ? "$" + val : '' },
-					{ name: 'currPrice', label: 'Curr Price',  align: 'right',  field: 'currPrice', sortable: true, format: val => val ? "$" + val : '' },
-					{ name: 'bids',      label: 'Bids',        align: 'center', field: 'bids',      sortable: true },
-					{ name: 'status',    label: 'Status',      align: 'center', field: 'status',    sortable: true },
+				 	{ name: 'name',       label: 'Name',        align: 'left',   field: 'name',       sortable: true },
+				 	{ name: 'saleType',   label: 'Type',        align: 'center', field: 'saleType',   sortable: true },
+					{ name: 'buyerId',    label: 'BuyerId',     align: 'left',   field: 'buyerId',    sortable: true },
+					{ name: 'buyerName',  label: 'Buyer',       align: 'left',   field: 'buyerName',  sortable: true },
+					{ name: 'startPrice', label: 'Start Price', align: 'right',  field: 'startPrice', sortable: true, format: val => val ? "$" + val : '' },
+					{ name: 'buyPrice',   label: 'Final Price', align: 'right',  field: 'buyPrice',   sortable: true, format: val => val ? "$" + val : '' },
+					{ name: 'bids',       label: 'Bids',        align: 'center', field: 'bids',       sortable: true },
+					{ name: 'status',     label: 'Status',      align: 'center', field: 'status',     sortable: true },
 					{ name: 'actions' }
             ],
             pagination: { rowsPerPage: 30 },
@@ -75,10 +75,11 @@
 		},
 		computed: {
 			...mapGetters('drop', ['getDrop']),
-			...mapGetters('dropItem', ['dropItemsExist', 'getDropItems']),
+			...mapGetters('item', ['itemsExist', 'getItems']),
 			drop() { return this.getDrop(this.dropId) },
-			dropItemToEdit() { return this.dropItemIdToEdit ? getDropItem(this.dropItems, this.dropItemIdToEdit) : null },
-         dropItems() { return this.getDropItems(this.dropId) },
+			itemToEdit() { return this.itemIdToEdit ? getItem(this.items, this.itemIdToEdit) : null },
+         items() { 
+            return this.getItems(this.dropId) },
          rowsSelected() { return this.selectedRowItems.length > 0 },
          showInvoiceButton() { 
             if (this.selectedRowItems.length == 0) { return false } 
@@ -94,33 +95,33 @@
          }
 		},
 		methods: {
-			...mapActions('dropItem', ['bindDropItems', 'deleteDropItem']),
-			editDropItem(dropItemId) {
-				// console.log("editDropItem", dropItemId)
-				this.dropItemIdToEdit = dropItemId
+			...mapActions('item', ['bindItems', 'deleteItem']),
+			editItem(itemId) {
+				// console.log("editItem", itemId)
+				this.itemIdToEdit = itemId
 				this.showEditModal = true
 			},
-			promptToDeleteDropItem(dropItemId, name) {
+			promptToDeleteItem(itemId, name) {
             this.$q.dialog({title: 'Confirm', message: 'Delete ' + name + '?', persistent: true,			
 	        		ok: { push: true }, cancel: { push: true, color: 'grey' }
-				}).onOk(() => { this.deleteDropItem(dropItemId) })
+				}).onOk(() => { this.deleteItem(itemId) })
 			}
 		},
 		components: {
-			'drop-item-add-edit' : require('components/DropItem/DropItemAddEdit.vue').default,
-      	'add-edit-invoice' : require('components/Admin/AddEditInvoice.vue').default
+			'item-add-edit' : require('components/Item/ItemAddEdit.vue').default,
+      	'invoice-add-edit' : require('components/Admin/InvoiceAddEdit.vue').default
       },
       created() {
-			console.log("DropItemsAdminPage: dropId=" + this.dropId)
-         this.dropId = this.$route.params.dropId
-
-         if (!this.dropItemsExist) { this.bindDropItems() }    
+			this.dropId = this.$route.params.dropId
+         console.log("ItemsPage: dropId=" + this.dropId)
+         
+         if (!this.itemsExist) { this.bindItems() }    
       },
 	}
 
-   function getDropItem(dropItems, dropItemId) { 
-      for (var dropItem of dropItems) {
-         if (dropItem.id == dropItemId) { return dropItem }
+   function getItem(items, itemId) { 
+      for (var item of items) {
+         if (item.id == itemId) { return item }
       }
 
       return null

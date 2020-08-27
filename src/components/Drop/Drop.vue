@@ -1,9 +1,7 @@
 <template>
 	<q-card class="card q-pa-sm">
 		<q-card-section class="q-px-xs q-py-md" @click="navToDrop">
-         <!-- <router-link :to="{ name: 'Drop', params: { dropId: drop.id } }"> -->
-			{{ drop.name }}
-         <!-- </router-link> -->
+         {{ drop.name }}
       </q-card-section>		
 		<q-card-actions class="absolute-bottom q-pa-none">
          <!-- first button is hidden but takes click on card -->

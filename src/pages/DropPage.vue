@@ -1,16 +1,21 @@
 <template>
-   <q-page class="q-pa-md" :class="purple">
-      <q-btn @click="navBack()" icon="keyboard_arrow_left" color="blue" flat small dense :class="pink" />
-      <div class="q-mt-md text-h6" :class="red">{{ drop.name }} </div>
+   <q-page class="q-pa-md">
+      <q-btn @click="navBack()" icon="keyboard_arrow_left" color="blue" flat small dense />
+      <div class="q-mt-md text-h6">{{ drop.name }} </div>
 	
       <div class="q-mt-md text-body1 text-bold">Drop Items</div>
       
-      <drop-item v-for="dropItem in dropItems" :key="dropItem.id" :dropItem="dropItem" class="q-mt-sm"/>
+      <div v-for="item in items" :key="item.id">
+         <router-link :to="{ name: 'Item', params: { itemId: item.id } }" 
+            style="text-decoration: none; color: inherit;">
+            <item :item="item" class="q-mt-sm"/>
+         </router-link>
+      </div>
       
       <q-btn @click="showModal=true" icon="add" unelevated class="q-mt-md" color="blue"/>
 	   
       <q-dialog v-model="showModal">	
-			<drop-item-add-edit type="add" :dropId="dropId" @close="showModal=false" />
+			<item-add-edit type="add" :dropId="dropId" @close="showModal=false" />
 		</q-dialog>
    </q-page>
    
@@ -27,24 +32,25 @@
         }
 		},
 	  	computed: {
-         ...mapGetters('drop', ['getDrop']),
-         ...mapGetters('dropItem', ['dropItemsExist', 'getDropItems']),
-         ...mapGetters('color', ['red', 'pink', 'orange', 'yellow', 'blue', 'green', 'indigo', 'purple' ]),
-			
+         ...mapGetters('drop', ['dropsExist', 'getDrop']),
+         ...mapGetters('item', ['itemsExist', 'getItems']),
+         
          drop() { return this.getDrop(this.dropId) },
-         dropItems() { return this.getDropItems(this.dropId) },
+         items() { return this.getItems(this.dropId) },
 		},
 		methods: {
-         ...mapActions('dropItem', ['bindDropItems']),
+         ...mapActions('drop', ['bindDrops']),
+			...mapActions('item', ['bindItems']),
 			navBack() { this.$router.go(-1) },
 		},
 		components: {
-	  		'drop-item' : require('components/DropItem/DropItem.vue').default,
-	  		'drop-item-add-edit' : require('components/DropItem/DropItemAddEdit.vue').default
+	  		'item' : require('components/Item/Item.vue').default,
+	  		'item-add-edit' : require('components/Item/ItemAddEdit.vue').default
       },
       created() {
          this.dropId = this.$route.params.dropId
-         if (!this.dropItemsExist) { this.bindDropItems() }    
+         if (!this.dropsExist) { this.bindDrops() }   
+         if (!this.itemsExist) { this.bindItems() }    
       },
 	}
 

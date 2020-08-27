@@ -1,6 +1,5 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore } from 'boot/firebase'
-import User from 'src/models/User'
 	
 /*
     user: 
@@ -27,7 +26,6 @@ const actions = {
 function collection() { return firestore.collection('users') }
 
 const getters = {
-   hasUsers: state => { return state.users && state.users.length > 0 },
    getUsers: state => { return state.users },
    getUser: state => userId => {
       for (var user of state.users) {
@@ -37,8 +35,7 @@ const getters = {
    }, 
    isAdmin: state => userId => { 
       let user = getters.getUser(userId)
-      console.log("isAdmin", user)
-      return user.isAdmin
+      return user ? user.isAdmin : false
    }
 }
 

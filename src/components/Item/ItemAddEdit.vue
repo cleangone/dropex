@@ -1,18 +1,18 @@
 <template>
 	<q-card class="form-card">
     <q-card-section>
-      <div class="text-h6 heading">{{ type }} Drop Item</div>
+      <div class="text-h6 heading">{{ type }} Item</div>
     </q-card-section>
 
     <q-card-section>
     	<div class="row q-mb-none">
-	      <q-input v-model="dropItemToSubmit.name" label="Name" ref="name" filled class="col"
+	      <q-input v-model="itemToSubmit.name" label="Name" ref="name" filled class="col"
 	      	:rules="[ val => !!val || '* Required',
 	          	val => val.length < 21 || 'Please use maximum 20 characters' ]" />
     	</div>
       <div class="row q-mb-none q-gutter-sm">
-         <q-select label="Status" v-model="dropItemToSubmit.status" :options="statusOptions" class="col" filled/>
-			<q-input v-model.number="dropItemToSubmit.startPrice" label="Price" type=number prefix="$" filled class="col" />
+         <q-select label="Status" v-model="itemToSubmit.status" :options="statusOptions" class="col" filled/>
+			<q-input v-model.number="itemToSubmit.startPrice" label="Price" type=number prefix="$" filled class="col" />
 		</div>
    </q-card-section>
 
@@ -26,58 +26,58 @@
 <script>
 	import { date } from 'quasar'
    import { mapActions } from 'vuex'
-   import { DropItemStatus } from '../../constants/Constants.js'
+   import { ItemStatus } from 'src/constants/Constants.js'
 	
 	export default {
-		props: ['type', 'dropItem', 'dropId'],
+		props: ['type', 'item', 'dropId'],
 		data() {
 			return {
-				dropItemToSubmit: {
+				itemToSubmit: {
                name: '',
                dropId: '',	
-               status: DropItemStatus.AVAILABLE,
+               status: ItemStatus.AVAILABLE,
                startPrice: 0,
 					currPrice: 0,
 					bidders: []
             },
-            statusOptions: [ DropItemStatus.AVAILABLE, DropItemStatus.DROPPING, DropItemStatus.HOLD ],
+            statusOptions: [ ItemStatus.AVAILABLE, ItemStatus.DROPPING, ItemStatus.HOLD ],
 						
 			}
 		},
 		methods: {
-			...mapActions('dropItem', ['createDropItem', 'updateDropItem']),
+			...mapActions('item', ['createItem', 'setItem']),
 			submitForm() {
 				console.log("submitForm")
 				this.$refs.name.validate()
 
 				if (!this.$refs.name.hasError) {
-               if (this.dropItemToSubmit.status == DropItemStatus.AVAILABLE) { 
-                  this.dropItemToSubmit.currPrice = 0 
-                  this.dropItemToSubmit.currBidderId = ''
-                  this.dropItemToSubmit.buyerId = ''
-                  this.dropItemToSubmit.buyerName = ''
-                  this.dropItemToSubmit.dropDoneDate = 0 
-						this.dropItemToSubmit.lastUserActivityDate = 0 
-						this.dropItemToSubmit.bidders = []
+               if (this.itemToSubmit.status == ItemStatus.AVAILABLE) { 
+                  this.itemToSubmit.currPrice = 0 
+                  this.itemToSubmit.currBidderId = ''
+                  this.itemToSubmit.buyerId = ''
+                  this.itemToSubmit.buyerName = ''
+                  this.itemToSubmit.dropDoneDate = 0 
+						this.itemToSubmit.lastUserActivityDate = 0 
+						this.itemToSubmit.bidders = []
                }
 					this.$emit('close')
-					this.createUpdateDropItem()
+					this.persistItem()
 				}
 			},
-			createUpdateDropItem() {
-            console.log("createUpdateDrop", this.dropToSubmit)
-            if (this.type == 'add') { this.createDropItem(this.dropItemToSubmit) }
-				else { this.updateDropItem(this.dropItemToSubmit) }
+			persistItem() {
+            console.log("persistItem", this.itemToSubmit)
+            if (this.type == 'add') { this.createItem(this.itemToSubmit) }
+				else { this.setItem(this.itemToSubmit) }
 			}
 		},
 		mounted() {
 			if (this.type == 'edit') {
             // slight delay because param update propagating as modal being popped up
-            setTimeout(() => { this.dropItemToSubmit = Object.assign({}, this.dropItem) }, 100)  
+            setTimeout(() => { this.itemToSubmit = Object.assign({}, this.item) }, 100)  
          }
          else {
             // slight delay because param update propagating as modal being popped up
-            setTimeout(() => { this.dropItemToSubmit.dropId = this.dropId }, 100)  
+            setTimeout(() => { this.itemToSubmit.dropId = this.dropId }, 100)  
 			}
 		}
    }

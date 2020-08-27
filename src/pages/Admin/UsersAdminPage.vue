@@ -9,12 +9,12 @@
 					</q-input>
 				</template>
 				<q-td slot="body-cell-edit" slot-scope="props" :props="props">
-    				<q-btn flat icon="edit" @click="edit(props.row.id)" />
+    				<q-btn icon="edit" @click="edit(props.row.id)" flat color="primary"/>
   				</q-td>
 			</q-table>
 		</div>
 		<q-dialog v-model="showEditModal">
-			<edit-user :user="userToEdit" @close="showEditModal=false" />
+			<user-edit :user="userToEdit" @close="showEditModal=false" />
 		</q-dialog>
   	</q-page>
 </template>
@@ -52,8 +52,11 @@
 			}
 		},
 		components: {
-			'edit-user' : require('components/Admin/EditUser.vue').default
-		},
+			'user-edit' : require('components/Admin/UserEdit.vue').default
+      },
+      created() {
+         console.log("UsersAdminPage")
+      }
    }
 
    function leftAlignedCol(name, label) { 

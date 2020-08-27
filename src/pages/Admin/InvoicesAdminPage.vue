@@ -4,6 +4,7 @@
 			<q-table title="Invoices" :data="invoices" 
 				:columns="columns" :visible-columns="visibleColumns" 
 				row-key="id" :filter="tableDataFilter"  :pagination.sync="pagination"
+            no-data-label="No invoices"
 				:dense="$q.screen.lt.md" class="q-mb-sm">
 				<template v-slot:top-right>
 					<q-space />					
@@ -31,10 +32,10 @@
                </q-tr>
                
                <template v-if="props.expand">
-                  <q-tr v-for="item in getItems(props.row.id)" :key="item.name" :props="props">
+                  <q-tr v-for="detail in getInvoiceDetails(props.row.id)" :key="detail.name" :props="props">
                      <q-td />
-                     <q-td class="text-left bg-grey-2">{{ item.name }}</q-td>
-                     <q-td class="text-right bg-grey-2">${{ item.price }}</q-td>
+                     <q-td class="text-left bg-grey-2">{{ detail.name }}</q-td>
+                     <q-td class="text-right bg-grey-2">{{ detail.price }}</q-td>
                   </q-tr>
                </template>
             </template>
@@ -42,7 +43,7 @@
 		</div>
 
 		<q-dialog v-model="showEditModal">
-			<add-edit-invoice type="edit" :invoice="invoiceToEdit" @close="showEditModal=false" />
+			<invoice-add-edit type="edit" :invoice="invoiceToEdit" @close="showEditModal=false" />
 		</q-dialog>
   	</q-page>
 </template>
@@ -56,12 +57,12 @@
 	  	   return {
 			   showEditModal: false,
 				tableDataFilter: '',
-            visibleColumns: ['userFullName', 'total', 'status'],
+            visibleColumns: ['userName', 'total', 'status'],
  				columns: [
                { name: 'id', field: 'id' },                 
-               { name: 'userFullName', label: 'User', align: 'left', field: 'userFullName', sortable: true },
-					{ name: 'total',  label: 'Total',  align: 'right',  field: 'total',  sortable: true, format: val => val ? "$" + val : '' },
-					{ name: 'status', label: 'Status', align: 'center', field: 'status', sortable: true },
+               { name: 'userName', label: 'User',   align: 'left',   field: 'userName', sortable: true },
+					{ name: 'total',    label: 'Total',  align: 'right',  field: 'total',    sortable: true, format: val => val ? "$" + val : '' },
+					{ name: 'status',   label: 'Status', align: 'center', field: 'status',   sortable: true },
             ],
             pagination: { rowsPerPage: 30 },
             invoiceIdToEdit: '',
@@ -79,7 +80,18 @@
 		methods: {
          ...mapActions('invoice', ['bindInvoices', 'deleteInvoice']),
          isDataCol(colName) { return (colName !== 'expand' && colName !== 'actions') },
-         getItems(invoiceId) { return this.getInvoice(invoiceId).items },
+         getInvoiceDetails(invoiceId) { 
+            let details = []
+            let invoice = this.getInvoice(invoiceId)
+            for (var item of invoice.items) {
+               details.push({ name: item.name, price: "$" + item.price })
+            }
+
+            details.push({ name: "Shipping", price: "$" + invoice.shippingCharge })
+            if (invoice.priceAdjustment) { details.push({ name: "Adjustment", price: "($" + invoice.priceAdjustment + ")" }) }
+
+            return details 
+         },
          editInvoice(invoiceId) {
 				this.invoiceIdToEdit = invoiceId
 				this.showEditModal = true
@@ -97,9 +109,10 @@
          // }
 		},
 		components: {
-			'add-edit-invoice' : require('components/Admin/AddEditInvoice.vue').default
+			'invoice-add-edit' : require('components/Admin/InvoiceAddEdit.vue').default
       },
       created() {
+         console.log("InvoicesAdminPage")
          if (!this.invoicesExist) { this.bindInvoices() }
       }
 	}

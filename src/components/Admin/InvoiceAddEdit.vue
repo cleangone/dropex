@@ -6,7 +6,7 @@
       <div v-if="invoiceError" class="text-red text-bold q-mt-sm">{{ invoiceError }}</div>
       <div v-else class="q-mt-sm">
          <q-table
-            :title="'Buyer: ' + invoiceToSubmit.userFullName"
+            :title="'Buyer: ' + invoiceToSubmit.userName"
             :columns="columns"
             :visible-columns="visibleColumns"
             :data="invoiceToSubmit.items"
@@ -57,17 +57,17 @@
 <script>
 	import { date } from 'quasar'
    import { mapActions } from 'vuex'
-   import { DropItemStatus, InvoiceStatus } from 'src/constants/Constants.js'
+   import { ItemStatus, InvoiceStatus } from 'src/constants/Constants.js'
    
 	export default {
-		props: ['type', 'dropItems', 'invoice'],
+		props: ['type', 'items', 'invoice'],
 		data() {
 			return {
             invoiceError: null,
 				invoiceToSubmit: {
                userId: null,
-               userFullName: null,
-               items: [], // dropItemId, name, price
+               userName: null, // first + last 
+               items: [], // itemId, name, price
                status: InvoiceStatus.CREATED,
                subTotal: 0,
                shippingCharge: 25,
@@ -87,19 +87,18 @@
     	},
 		methods: {
 			...mapActions('invoice', ['createInvoice', 'updateInvoice']),
-			...mapActions('dropItem', ['sparseUpdateDropItem']),
+			...mapActions('item', ['updateItem']),
 			submitForm() {
-				// console.log("submitForm")
-				this.createUpdateInvoice()
+				this.persistInvoice()
             this.$emit('close')
 			},
-			createUpdateInvoice() {
-            // console.log("createUpdateInvoice", this.invoiceToSubmit)
+			persistInvoice() {
+            // console.log("persistInvoice", this.invoiceToSubmit)
             if (this.isEdit) { this.updateInvoice(this.invoiceToSubmit)}
             else { 
                this.createInvoice(this.invoiceToSubmit)
-               for (var dropItem of this.dropItems) {
-                  this.sparseUpdateDropItem({ id: dropItem.id, status: DropItemStatus.INVOICED })
+               for (var item of this.items) {
+                  this.updateItem({ id: item.id, status: ItemStatus.INVOICED })
                }
             }
 			}
@@ -110,39 +109,33 @@
             setTimeout(() => { this.invoiceToSubmit = Object.assign({}, this.invoice) }, 100)  
          }
          else {
-            console.log("mounted", this.dropItems)
-            for (var dropItem of this.dropItems) {
-               if (!dropItem.buyerId) { 
+            console.log("mounted", this.items)
+            for (var item of this.items) {
+               if (!item.buyerId) { 
                   this.invoiceError = "Not all items have a buyer" 
                   return 
                }
 
                if (this.invoiceToSubmit.userId == null) { 
-                  this.invoiceToSubmit.userId = dropItem.buyerId 
-                  this.invoiceToSubmit.userFullName = dropItem.buyerName
+                  this.invoiceToSubmit.userId = item.buyerId 
+                  this.invoiceToSubmit.userName = item.buyerName
                }
-               if (dropItem.buyerId != this.invoiceToSubmit.userId) { 
+               if (item.buyerId != this.invoiceToSubmit.userId) { 
                   this.invoiceError = "Not all items have the same buyer"
                   return 
                }
-               if (dropItem.status != DropItemStatus.HOLD && dropItem.status != DropItemStatus.INVOICED) { 
+               if (item.status != ItemStatus.HOLD && item.status != ItemStatus.INVOICED) { 
                   this.invoiceError = "All item must be status Hold or Invoiced" 
                   return
                }
 
-               this.invoiceToSubmit.items.push({ dropItemId: dropItem.id, name: dropItem.name, price: dropItem.currPrice })
-               this.invoiceToSubmit.subTotal += dropItem.currPrice
+               this.invoiceToSubmit.items.push({ id: item.id, name: item.name, price: item.buyPrice })
+               this.invoiceToSubmit.subTotal += item.buyPrice
             }
          }
 		}
    }
    
-   function localTimezone() {
-		let dateString = new Date(Date.now()).toString()
-      let timezone = dateString.slice(dateString.indexOf("("), dateString.indexOf(")") + 1)
-      if (timezone == "(Eastern Daylight Time)") { timezone = "(EDT)" }
-      return timezone
-	}
 </script>
 
 <style>

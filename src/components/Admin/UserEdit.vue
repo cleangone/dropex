@@ -12,7 +12,7 @@
 	      <q-input v-model="userToUpdate.lastName" label="Last Name" filled class="col"/>
     	</div>
 		<div class="row q-mb-sm">
-	      <q-toggle v-model="userToUpdate.payPalEmail" label="PayPal Email" class="col"/>
+	      <q-input v-model="userToUpdate.payPalEmail" label="PayPal Email" filled class="col"/>
     	</div>
       <div v-if="!isEditingSelf" class="row q-mb-sm">
 	      <q-toggle v-model="userToUpdate.isAdmin" label="Admin" class="col"/>

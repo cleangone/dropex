@@ -2,13 +2,13 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { vuexfireMutations } from 'vuexfire'
 
-import auth     from './auth-store'
-import bid      from './bid-store'
-import color    from './color-store'
-import drop     from './drop-store'
-import dropItem from './drop-item-store'
-import invoice  from './invoice-store'
-import user     from './user-store'
+import auth    from './auth-store'
+import bid     from './bid-store'
+import color   from './color-store'
+import drop    from './drop-store'
+import invoice from './invoice-store'
+import item    from './item-store'
+import user    from './user-store'
 
 Vue.use(Vuex)
 
@@ -28,8 +28,8 @@ export default function (/* { ssrContext } */) {
       bid,
       color,
       drop,
-      dropItem,
       invoice,
+      item,
       user
     },
     mutations: {
