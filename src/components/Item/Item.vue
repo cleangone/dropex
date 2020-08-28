@@ -16,10 +16,10 @@
       <q-card-section class="q-pa-md"/>
 		<q-card-actions class="absolute-bottom q-pa-none">
          <div v-if="isAvailableForPurchase">
-            <q-btn v-if="loggedIn" @click="promptToBid()" label="Bid" color="primary" class="q-ma-sm" small/>
-            <q-btn v-else to="/auth/login" label="Login to Bid" color="primary" class="q-ma-sm" small/>
+            <q-btn v-if="loggedIn" @click="promptToBid()" label="Bid" @click.stop color="primary" class="q-ma-sm" small/>
+            <q-btn v-else to="/auth/login"       label="Login to Bid" @click.stop color="primary" class="q-ma-sm" small/>
          </div>
-         <q-btn v-if="userIsAdmin" @click="showEditModal = true" icon="edit" color="blue" flat small class="col" align="right"/>
+         <q-btn v-if="userIsAdmin" @click="showEditModal = true" icon="edit" @click.stop color="primary" flat small class="col" align="right"/>
 		</q-card-actions> 
 		<q-dialog v-model="showEditModal">
 			<item-add-edit type="edit" :item="item" @close="showEditModal=false" />
@@ -44,9 +44,9 @@
          ...mapGetters('drop', ['dropsExist']),
          isAvailableForPurchase() { return this.item.status ==  ItemStatus.AVAILABLE || this.item.status ==  ItemStatus.DROPPING },
          isDropping() { return this.item.status == ItemStatus.DROPPING },
-         currPrice() { return this.item.currPrice ? this.item.currPrice  : this.item.startPrice },
+         currPrice() { return this.item.buyPrice ? this.item.buyPrice  : this.item.startPrice },
          userIsCurrBidder() { return this.item.currBidderId == this.userId },
-         userIsOutbid() { return this.item.bidders.includes(this.userId) && !this.userIsHigherBidder},
+         userIsOutbid() { return this.item.bidderIds.includes(this.userId) && !this.userIsHigherBidder},
          userIsBuyer() { return this.item.buyerId == this.userId },
          user() { return this.getUser(this.userId) },
          userIsAdmin() { return this.user && this.user.isAdmin }
@@ -54,7 +54,7 @@
       methods: {
          ...mapActions('bid', ['createBid']),
          promptToBid() {
-				let bidAmount = this.item.currPrice ? this.item.currPrice + 25 : this.item.startPrice
+				let bidAmount = this.item.buyPrice ? this.item.buyPrice + 25 : this.item.startPrice
 				this.$q.dialog({title: 'Confirm', message: 'Bid $' + bidAmount + ' on ' + this.item.name + '?', persistent: true,			
 	        		ok: { push: true }, cancel: { push: true, color: 'grey' }
 				}).onOk(() => {

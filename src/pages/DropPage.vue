@@ -6,8 +6,7 @@
       <div class="q-mt-md text-body1 text-bold">Drop Items</div>
       
       <div v-for="item in items" :key="item.id">
-         <router-link :to="{ name: 'Item', params: { itemId: item.id } }" 
-            style="text-decoration: none; color: inherit;">
+         <router-link :to="{ name: 'Item', params: { itemId: item.id } }" style="text-decoration: none; color: inherit;">
             <item :item="item" class="q-mt-sm"/>
          </router-link>
       </div>

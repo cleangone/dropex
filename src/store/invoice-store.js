@@ -6,8 +6,9 @@ import { uid } from 'quasar'
    invoice
       id
       userId
+      userName
       createdDate
-      items[] - itemId, name, price
+      items[] - id, name, price
       status: created, sent, paid, shipped
       subTotal
       shippingCharge

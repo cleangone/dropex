@@ -38,7 +38,7 @@
                status: ItemStatus.AVAILABLE,
                startPrice: 0,
 					currPrice: 0,
-					bidders: []
+					bidderIds: []
             },
             statusOptions: [ ItemStatus.AVAILABLE, ItemStatus.DROPPING, ItemStatus.HOLD ],
 						
@@ -47,25 +47,25 @@
 		methods: {
 			...mapActions('item', ['createItem', 'setItem']),
 			submitForm() {
-				console.log("submitForm")
+				// console.log("submitForm")
 				this.$refs.name.validate()
 
 				if (!this.$refs.name.hasError) {
                if (this.itemToSubmit.status == ItemStatus.AVAILABLE) { 
-                  this.itemToSubmit.currPrice = 0 
+                  this.itemToSubmit.buyPrice = 0 
+                  this.itemToSubmit.bidderIds = []
                   this.itemToSubmit.currBidderId = ''
                   this.itemToSubmit.buyerId = ''
                   this.itemToSubmit.buyerName = ''
                   this.itemToSubmit.dropDoneDate = 0 
 						this.itemToSubmit.lastUserActivityDate = 0 
-						this.itemToSubmit.bidders = []
                }
 					this.$emit('close')
 					this.persistItem()
 				}
 			},
 			persistItem() {
-            console.log("persistItem", this.itemToSubmit)
+            // console.log("persistItem", this.itemToSubmit)
             if (this.type == 'add') { this.createItem(this.itemToSubmit) }
 				else { this.setItem(this.itemToSubmit) }
 			}
