@@ -4,12 +4,8 @@
       <div class="q-mt-md text-h6">{{ drop.name }} </div>
 	
       <div class="q-mt-md text-body1 text-bold">Drop Items</div>
-      
-      
-         <item v-for="item in items" :key="item.id" :item="item" class="q-mt-sm"/>
+      <item v-for="item in items" :key="item.id" :item="item" class="q-mt-sm"/>
          
-     
-      
       <q-btn @click="showModal=true" icon="add" unelevated class="q-mt-md" color="primary"/>
       <q-dialog v-model="showModal">	
 			<item-add-edit type="add" :dropId="dropId" @close="showModal=false" />
