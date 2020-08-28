@@ -1,12 +1,14 @@
 <template>
 	<q-card class="card q-pa-sm">
-		<q-card-section class="q-px-xs q-py-md" @click="navToDrop">
-         {{ drop.name }}
-      </q-card-section>		
+		
+      <router-link :to="{ name: 'Drop', params: { dropId: drop.id } }" style="text-decoration: none; color: inherit;">
+         <q-card-section class="q-px-xs q-py-md">
+            {{ drop.name }}
+         </q-card-section>	
+      </router-link>
+
 		<q-card-actions class="absolute-bottom q-pa-none">
-         <!-- first button is hidden but takes click on card -->
-			<q-btn @click="navToDrop" flat class="col" />
-         <q-btn v-if="userIsAdmin" @click="showEditModal = true" icon="edit" color="blue" flat small dense class="col" align="right"/>
+         <q-btn v-if="userIsAdmin" @click="showEditModal = true" icon="edit" color="primary" flat small dense class="col" align="right"/>
       </q-card-actions> 
 		<q-dialog v-model="showEditModal">
 			<drop-add-edit type="edit" :drop="drop" @close="showEditModal=false" />
@@ -32,10 +34,6 @@
          userIsAdmin() { return this.user && this.user.isAdmin }
       },
       methods: {
-         ...mapActions('drop', ['deleteDrop']),
-         navToDrop() {
-            this.$router.push('/drop/' + this.drop.id)
-         }
       },
       components: {
          'drop-add-edit' : require('components/Drop/DropAddEdit.vue').default

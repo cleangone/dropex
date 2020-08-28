@@ -5,14 +5,12 @@
 	
       <div class="q-mt-md text-body1 text-bold">Drop Items</div>
       
-      <div v-for="item in items" :key="item.id">
-         <router-link :to="{ name: 'Item', params: { itemId: item.id } }" style="text-decoration: none; color: inherit;">
-            <item :item="item" class="q-mt-sm"/>
-         </router-link>
-      </div>
       
-      <q-btn @click="showModal=true" icon="add" unelevated class="q-mt-md" color="blue"/>
-	   
+         <item v-for="item in items" :key="item.id" :item="item" class="q-mt-sm"/>
+         
+     
+      
+      <q-btn @click="showModal=true" icon="add" unelevated class="q-mt-md" color="primary"/>
       <q-dialog v-model="showModal">	
 			<item-add-edit type="add" :dropId="dropId" @close="showModal=false" />
 		</q-dialog>

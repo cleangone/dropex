@@ -1,19 +1,23 @@
 <template>
 	<q-card class="card q-pl-sm">
-		<q-card-section class="q-px-xs">
-         <div class="text-bold">{{ item.name }}</div>
-         <div v-if="isAvailableForPurchase">
-            <span>Price: ${{ currPrice }} </span>
-            <span v-if="userIsCurrBidder" class="text-bold"> - You are the high-bidder</span>
-            <span v-else-if="userIsOutbid" class="text-bold"> - You have been outbid</span>
-         </div>
-         <div v-else>
-            On Hold
-            <span v-if="userIsBuyer" class="text-bold"> - You are the the winning bidder</span>
-         </div>
-         <item-timer v-if="isDropping" :item="item"/>
-      </q-card-section>	
-      <q-card-section class="q-pa-md"/>
+      <!-- routing to existing page is a no-op - not an error -->
+      <router-link :to="{ name: 'Item', params: { itemId: item.id } }" style="text-decoration: none; color: inherit;">
+         <q-card-section class="q-px-xs">
+            <div class="text-bold">{{ item.name }}</div>
+            <div v-if="isAvailableForPurchase">
+               <span>Price: ${{ currPrice }} </span>
+               <span v-if="userIsCurrBidder" class="text-bold"> - You are the high-bidder</span>
+               <span v-else-if="userIsOutbid" class="text-bold"> - You have been outbid</span>
+            </div>
+            <div v-else>
+               On Hold
+               <span v-if="userIsBuyer" class="text-bold"> - You are the the winning bidder</span>
+            </div>
+            <item-timer v-if="isDropping" :item="item"/>
+         </q-card-section>	
+         <q-card-section class="q-pa-md"/>
+      </router-link>
+
 		<q-card-actions class="absolute-bottom q-pa-none">
          <div v-if="isAvailableForPurchase">
             <q-btn v-if="loggedIn" @click="promptToBid()" label="Bid" @click.stop color="primary" class="q-ma-sm" small/>
