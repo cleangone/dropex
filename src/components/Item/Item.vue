@@ -10,7 +10,7 @@
                <span v-else-if="userIsOutbid" class="text-bold"> - You have been outbid</span>
             </div>
             <div v-else>
-               On Hold
+               {{ holdSoldText }}
                <span v-if="userIsBuyer" class="text-bold"> - You are the the winning bidder</span>
             </div>
             <item-timer v-if="isDropping" :item="item"/>
@@ -49,6 +49,9 @@
          isAvailableForPurchase() { return this.item.status ==  ItemStatus.AVAILABLE || this.item.status ==  ItemStatus.DROPPING },
          isDropping() { return this.item.status == ItemStatus.DROPPING },
          currPrice() { return this.item.buyPrice ? this.item.buyPrice  : this.item.startPrice },
+         holdSoldText() { 
+            return this.item.status ==  ItemStatus.HOLD || this.item.status ==  ItemStatus.INVOICED ? 
+            ItemStatus.HOLD : ItemStatus.SOLD },
          userIsCurrBidder() { return this.item.currBidderId == this.userId },
          userIsOutbid() { return this.item.bidderIds.includes(this.userId) && !this.userIsHigherBidder},
          userIsBuyer() { return this.item.buyerId == this.userId },
